@@ -142,16 +142,12 @@ int main(int argc, const char * argv[]) {
 		return -1;
 	}
 
-	cout << "Making matrix" << endl;
-
 	//define and populate trial matrix
 	visitedMatrix = new bool*[cap[0]];
 	for (int i=0; i<cap[0]; i++) {
 		visitedMatrix[i] = new bool[cap[1]];
 		fill(visitedMatrix[i], visitedMatrix[i]+cap[1], false);
 	}
-
-	cout << "Matrix made" << endl;
 
 	cout << hitGoals(State{0, 0, cap[2], nullptr}) << endl;
 
