@@ -84,7 +84,8 @@ State AtoC(State &cur) {
 }
 
 void printGoal(State goal) {
-
+	//TODO: make this recursive with base case nullptr
+	cout << goal.string() << endl;
 }
 
 bool hitGoals(State cur) {
