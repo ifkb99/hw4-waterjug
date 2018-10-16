@@ -6,27 +6,81 @@
 using namespace std;
 
 State CtoA(State &cur) {
-	return State{cur.a + (cur.c - (cap[0] - cur.a)), cur.b, cur.c - (cap[0] - cur.a), &cur};
+	if (cur.a < cap[0]) {
+		int pour = cap[0] - cur.a;
+		if (pour >= cur.c) {
+			cur.a += cur.c;
+		} else {
+			cur.c -= pour;
+			cur.a += pour;
+		}
+	}
+	return cur;
 }
 
 State BtoA(State &cur) {
-	return State{cur.a + (cur.b - (cap[0] - cur.a)), cur.b - (cap[0] - cur.a), cur.c, &cur};
+	if (cur.a < cap[0]) {
+		int pour = cap[0] - cur.a;
+		if (pour >= cur.b) {
+			cur.a += cur.b;
+		} else {
+			cur.b -= pour;
+			cur.a += pour;
+		}
+	}
+	return cur;
 }
 
 State CtoB(State &cur) {
-	return State{cur.a, cur.b + (cur.c - (cap[1] - cur.b)), cur.c - (cap[1] - cur.b), &cur};
+	if (cur.b < cap[1]) {
+		int pour = cap[1] - cur.b;
+		if (pour >= cur.c) {
+			cur.b += cur.c;
+		} else {
+			cur.c -= pour;
+			cur.b += pour;
+		}
+	}
+	return cur;
 }
 
 State AtoB(State &cur) {
-    return State{cur.a - (cap[1] - cur.b),  cur.b + (cur.a - (cap[1] - cur.b)), cur.c, &cur};
+	if (cur.b < cap[1]) {
+		int pour = cap[1] - cur.b;
+		if (pour >= cur.a) {
+			cur.b += cur.a;
+		} else {
+			cur.a -= pour;
+			cur.b += pour;
+		}
+	}
+	return cur;
 }
 
 State BtoC(State &cur) {
-    return State{cur.a, cur.b - (cap[2] - cur.c), cur.c + (cur.b - (cap[2] - cur.c)), &cur};
+	if (cur.c < cap[2]) {
+		int pour = cap[2] - cur.c;
+		if (pour >= cur.b) {
+			cur.c += cur.b;
+		} else {
+			cur.b -= pour;
+			cur.c += pour;
+		}
+	}
+	return cur;
 }
 
 State AtoC(State &cur) {
-    return State{cur.a - (cap[2] - cur.a), cur.b, cur.c + (cur.a - (cap[2] - cur.c)), &cur};
+	if (cur.c < cap[2]) {
+		int pour = cap[2] - cur.c;
+		if (pour >= cur.a) {
+			cur.c += cur.a;
+		} else {
+			cur.a -= pour;
+			cur.c += pour;
+		}
+	}
+	return cur;
 }
 
 void printGoal(State goal) {
