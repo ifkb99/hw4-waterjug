@@ -84,7 +84,10 @@ State AtoC(State &cur) {
 }
 
 void printGoal(State goal) {
-	//TODO: make this recursive with base case nullptr
+	//TODO: add in extra string stuff
+	if (goal.parent != nullptr) {
+		printGoal(goal.parent);
+	}
 	cout << goal.to_string() << endl;
 }
 
