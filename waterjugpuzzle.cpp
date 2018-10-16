@@ -145,7 +145,7 @@ int main(int argc, const char * argv[]) {
 	cout << "Making matrix" << endl;
 
 	//define and populate trial matrix
-	**visitedMatrix = new bool*[cap[0]];
+	visitedMatrix = new bool*[cap[0]];
 	for (int i=0; i<cap[0]; i++) {
 		visitedMatrix[i] = new bool[cap[1]];
 		fill(visitedMatrix[i], visitedMatrix[i]+cap[1], false);
