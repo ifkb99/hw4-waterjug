@@ -5,7 +5,7 @@
 
 using namespace std;
 
-State CtoA(State &cur) {
+State CtoA(State cur) {
 	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.a < cap[0]) {
 		int pour = cap[0] - cur.a;
@@ -20,7 +20,7 @@ State CtoA(State &cur) {
 	return nextState;
 }
 
-State BtoA(State &cur) {
+State BtoA(State cur) {
 	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.a < cap[0]) {
 		int pour = cap[0] - cur.a;
@@ -35,7 +35,7 @@ State BtoA(State &cur) {
 	return nextState;
 }
 
-State CtoB(State &cur) {
+State CtoB(State cur) {
 	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.b < cap[1]) {
 		int pour = cap[1] - cur.b;
@@ -50,7 +50,7 @@ State CtoB(State &cur) {
 	return nextState;
 }
 
-State AtoB(State &cur) {
+State AtoB(State cur) {
 	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.b < cap[1]) {
 		int pour = cap[1] - cur.b;
@@ -65,7 +65,7 @@ State AtoB(State &cur) {
 	return nextState;
 }
 
-State BtoC(State &cur) {
+State BtoC(State cur) {
 	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.c < cap[2]) {
 		int pour = cap[2] - cur.c;
@@ -80,7 +80,7 @@ State BtoC(State &cur) {
 	return nextState;
 }
 
-State AtoC(State &cur) {
+State AtoC(State cur) {
 	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.c < cap[2]) {
 		int pour = cap[2] - cur.c;
@@ -97,7 +97,6 @@ State AtoC(State &cur) {
 
 void printGoal(State goal) {
 	//TODO: add in extra string stuff
-	//cout << "meme" << endl;
 	if (goal.a != 0 && goal.b != 0) {
 		printGoal(*goal.parent);
 	}

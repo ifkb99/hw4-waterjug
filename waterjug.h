@@ -33,6 +33,13 @@ int goal[3];
 //functions
 bool hitGoals(State cur);
 void printGoal(State goal);
+//state mod funcs
+State CtoA(State cur);
+State BtoA(State cur);
+State CtoB(State cur);
+State AtoB(State cur);
+State BtoC(State cur);
+State AtoC(State cur);
 
 //a capA by capB matrix
 bool **visitedMatrix;
