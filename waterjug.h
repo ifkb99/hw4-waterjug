@@ -9,10 +9,9 @@
 struct State {
 	int a, b, c;
 	State *parent;
-	//set one to true according to which operation has been done
-	//ex CtoA is idx 0, BtoA is idx 1...
+
 	//used for printing
-	bool operation[6];
+	std::string operation;
 
 	State(int _a, int _b, int _c, State* _parent) : a(_a), b(_b), c(_c), parent(_parent) {}
 

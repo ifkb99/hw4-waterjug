@@ -6,87 +6,99 @@
 using namespace std;
 
 State CtoA(State &cur) {
+	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.a < cap[0]) {
 		int pour = cap[0] - cur.a;
 		if (pour >= cur.c) {
-			cur.a += cur.c;
+			nextState.a += cur.c;
+			nextState.c = 0;
 		} else {
-			cur.c -= pour;
-			cur.a += pour;
+			nextState.c -= pour;
+			nextState.a += pour;
 		}
 	}
-	return cur;
+	return nextState;
 }
 
 State BtoA(State &cur) {
+	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.a < cap[0]) {
 		int pour = cap[0] - cur.a;
 		if (pour >= cur.b) {
-			cur.a += cur.b;
+			nextState.a += cur.b;
+			nextState.b = 0;
 		} else {
-			cur.b -= pour;
-			cur.a += pour;
+			nextState.b -= pour;
+			nextState.a += pour;
 		}
 	}
-	return cur;
+	return nextState;
 }
 
 State CtoB(State &cur) {
+	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.b < cap[1]) {
 		int pour = cap[1] - cur.b;
 		if (pour >= cur.c) {
-			cur.b += cur.c;
+			nextState.b += cur.c;
+			nextState.c = 0;
 		} else {
-			cur.c -= pour;
-			cur.b += pour;
+			nextState.c -= pour;
+			nextState.b += pour;
 		}
 	}
-	return cur;
+	return nextState;
 }
 
 State AtoB(State &cur) {
+	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.b < cap[1]) {
 		int pour = cap[1] - cur.b;
 		if (pour >= cur.a) {
-			cur.b += cur.a;
+			nextState.b += cur.a;
+			nextState.a = 0;
 		} else {
-			cur.a -= pour;
-			cur.b += pour;
+			nextState.a -= pour;
+			nextState.b += pour;
 		}
 	}
-	return cur;
+	return nextState;
 }
 
 State BtoC(State &cur) {
+	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.c < cap[2]) {
 		int pour = cap[2] - cur.c;
 		if (pour >= cur.b) {
-			cur.c += cur.b;
+			nextState.c += cur.b;
+			nextState.b = 0;
 		} else {
-			cur.b -= pour;
-			cur.c += pour;
+			nextState.b -= pour;
+			nextState.c += pour;
 		}
 	}
-	return cur;
+	return nextState;
 }
 
 State AtoC(State &cur) {
+	State nextState = State{cur.a, cur.b, cur.c, &cur};
 	if (cur.c < cap[2]) {
 		int pour = cap[2] - cur.c;
 		if (pour >= cur.a) {
-			cur.c += cur.a;
+			nextState.c += cur.a;
+			nextState.a = 0;
 		} else {
-			cur.a -= pour;
-			cur.c += pour;
+			nextState.a -= pour;
+			nextState.c += pour;
 		}
 	}
-	return cur;
+	return nextState;
 }
 
 void printGoal(State goal) {
 	//TODO: add in extra string stuff
 	if (goal.parent != nullptr) {
-		printGoal(goal.parent);
+		printGoal(*goal.parent);
 	}
 	cout << goal.to_string() << endl;
 }
@@ -96,14 +108,13 @@ bool hitGoals(State cur) {
 	while (!BFTraversal.empty()) {
 		cur = BFTraversal.front();
 		BFTraversal.pop();
-		if (!(cur.a > cap[0] || cur.b > cap[1] || visitedMatrix[cur.a][cur.b])) {
+		if (!visitedMatrix[cur.a][cur.b]) {
 			visitedMatrix[cur.a][cur.b] = true;
 			if (cur.a == goal[0] && cur.b == goal[1]) {
 				printGoal(cur);
 				return true;
 			}
 			//push all traversals into queue
-			//some math may still need to be checked
 			BFTraversal.push(CtoA(cur));
 			BFTraversal.push(BtoA(cur));
 			BFTraversal.push(CtoB(cur));
@@ -153,9 +164,9 @@ int main(int argc, const char * argv[]) {
 		fill(visitedMatrix[i], visitedMatrix[i]+cap[1], false);
 	}
 
-	cout << hitGoals(State{0, 0, cap[2], nullptr}) << endl;
-
-	//make all calls here
+	if (!hitGoals(State{0, 0, cap[2], nullptr})) {
+		cout << "No solution." << endl;
+	}
 
 	//delete visitedMatrix
 	for (int i=0; i<cap[0]; i++) {
