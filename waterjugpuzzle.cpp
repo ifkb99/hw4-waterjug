@@ -108,12 +108,16 @@ bool hitGoals(State cur) {
 	while (!BFTraversal.empty()) {
 		cur = BFTraversal.front();
 		BFTraversal.pop();
+		cout << 0 << endl;
+		cout << cur.to_string() << endl;
 		if (!visitedMatrix[cur.a][cur.b]) {
+			cout << "saw matrix" << endl;
 			visitedMatrix[cur.a][cur.b] = true;
 			if (cur.a == goal[0] && cur.b == goal[1]) {
 				printGoal(cur);
 				return true;
 			}
+			cout << 2 << endl;
 			//push all traversals into queue
 			BFTraversal.push(CtoA(cur));
 			BFTraversal.push(BtoA(cur));
@@ -158,10 +162,10 @@ int main(int argc, const char * argv[]) {
 	}
 
 	//define and populate trial matrix
-	visitedMatrix = new bool*[cap[0]];
-	for (int i=0; i<cap[0]; i++) {
-		visitedMatrix[i] = new bool[cap[1]];
-		fill(visitedMatrix[i], visitedMatrix[i]+cap[1], false);
+	visitedMatrix = new bool*[cap[0]+1];
+	for (int i=0; i<cap[0]+1; i++) {
+		visitedMatrix[i] = new bool[cap[1]+1];
+		fill(visitedMatrix[i], visitedMatrix[i]+cap[1]+1, false);
 	}
 
 	if (!hitGoals(State{0, 0, cap[2], nullptr})) {
@@ -169,7 +173,7 @@ int main(int argc, const char * argv[]) {
 	}
 
 	//delete visitedMatrix
-	for (int i=0; i<cap[0]; i++) {
+	for (int i=0; i<cap[0]+1; i++) {
 		delete [] visitedMatrix[i];
 	}
 	delete [] visitedMatrix;
