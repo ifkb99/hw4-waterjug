@@ -97,7 +97,8 @@ State AtoC(State &cur) {
 
 void printGoal(State goal) {
 	//TODO: add in extra string stuff
-	if (goal.parent != nullptr) {
+	//cout << "meme" << endl;
+	if (goal.a != 0 && goal.b != 0) {
 		printGoal(*goal.parent);
 	}
 	cout << goal.to_string() << endl;
@@ -108,16 +109,13 @@ bool hitGoals(State cur) {
 	while (!BFTraversal.empty()) {
 		cur = BFTraversal.front();
 		BFTraversal.pop();
-		cout << 0 << endl;
-		cout << cur.to_string() << endl;
+		cout << cur.to_string() << endl; //debug
 		if (!visitedMatrix[cur.a][cur.b]) {
-			cout << "saw matrix" << endl;
 			visitedMatrix[cur.a][cur.b] = true;
 			if (cur.a == goal[0] && cur.b == goal[1]) {
 				printGoal(cur);
 				return true;
 			}
-			cout << 2 << endl;
 			//push all traversals into queue
 			BFTraversal.push(CtoA(cur));
 			BFTraversal.push(BtoA(cur));
