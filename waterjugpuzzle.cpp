@@ -108,7 +108,6 @@ bool hitGoals(State cur) {
 	while (!BFTraversal.empty()) {
 		cur = BFTraversal.front();
 		BFTraversal.pop();
-		cout << cur.to_string() << endl; //debug
 		if (!visitedMatrix[cur.a][cur.b]) {
 			visitedMatrix[cur.a][cur.b] = true;
 			if (cur.a == goal[0] && cur.b == goal[1]) {
