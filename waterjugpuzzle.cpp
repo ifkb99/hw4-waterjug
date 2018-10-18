@@ -110,13 +110,17 @@ void printGoal(State goal) {
 	printState(goal);
 }
 
+bool visitedState(State &cur) {
+	return visitedMatrix[cur.a][cur.b] != nullptr;
+}
+
 bool hitGoals(State cur) {
 	BFTraversal.push(cur);
 	while (!BFTraversal.empty()) {
 		cur = BFTraversal.front();
 		BFTraversal.pop();
-		if (!visitedMatrix[cur.a][cur.b]) {
-			visitedMatrix[cur.a][cur.b] = true;
+		if (!visitedState(cur)) {
+			visitedMatrix[cur.a][cur.b] = &cur;
 			if (cur.a == goal[0] && cur.b == goal[1]) {
 				printState(State{0, 0, cap[2], nullptr});
 				printGoal(cur);
@@ -166,10 +170,10 @@ int main(int argc, const char * argv[]) {
 	}
 
 	//define and populate trial matrix
-	visitedMatrix = new bool*[cap[0]+1];
+	visitedMatrix = new State**[cap[0]+1];
 	for (int i=0; i<cap[0]+1; i++) {
-		visitedMatrix[i] = new bool[cap[1]+1];
-		fill(visitedMatrix[i], visitedMatrix[i]+cap[1]+1, false);
+		visitedMatrix[i] = new State*[cap[1]+1];
+		fill(visitedMatrix[i], visitedMatrix[i]+cap[1]+1, nullptr);
 	}
 
 	if (!hitGoals(State{0, 0, cap[2], nullptr})) {
@@ -177,7 +181,12 @@ int main(int argc, const char * argv[]) {
 	}
 
 	//delete visitedMatrix
-	for (int i=0; i<cap[0]+1; i++) {
+	for (int i=1; i<cap[0]+1; i++) {
+		//debug loop
+		for (int j=1; j<cap[1]+1; j++) {
+			if (visitedMatrix[i][j] != nullptr)
+				cout << i << ", " << j << ": " << visitedMatrix[i][j]->to_string() << endl;
+		}
 		delete [] visitedMatrix[i];
 	}
 	delete [] visitedMatrix;

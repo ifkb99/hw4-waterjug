@@ -44,7 +44,7 @@ void printGoal(State goal);
 bool hitGoals(State cur);
 
 //a capA by capB matrix
-bool **visitedMatrix;
+State ***visitedMatrix;
 
 //traversal queue
 std::queue<State> BFTraversal;
