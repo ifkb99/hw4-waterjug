@@ -14,7 +14,13 @@ struct State {
 	std::string operation;
 
 	//State(int _a, int _b, int _c, State* _parent) : a(_a), b(_b), c(_c), parent(_parent) {}
-	State(int _a, int _b, int _c, int _p1, int _p2) : a(_a), b(_b), c(_c), p1(_p1), p2(_p2) {}
+	State(int _a, int _b, int _c, int _p1, int _p2) : a(0), b(0), c(0), p1(-2), p2(-2) {
+		a = _a;
+		b = _b;
+		c = _c;
+		p1 = _p1;
+		p2 = _p2;
+	}
 
 	//returns string of jug state
 	std::string to_string() {
