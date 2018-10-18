@@ -95,12 +95,19 @@ State AtoC(State cur) {
 	return nextState;
 }
 
+void printState(State s) {
+	// cout << "Pour " << s.amt << " gallon";
+	// if (s.amt > 1) { cout << "s"; }
+	// cout << " from " << s.op << ". " << s.to_string() << endl;
+	cout << s.to_string() << endl;
+}
+
 void printGoal(State goal) {
 	//TODO: add in extra string stuff
 	if (goal.a != 0 && goal.b != 0) {
 		printGoal(*goal.parent);
 	}
-	cout << goal.to_string() << endl;
+	printState(goal);
 }
 
 bool hitGoals(State cur) {
@@ -111,6 +118,7 @@ bool hitGoals(State cur) {
 		if (!visitedMatrix[cur.a][cur.b]) {
 			visitedMatrix[cur.a][cur.b] = true;
 			if (cur.a == goal[0] && cur.b == goal[1]) {
+				printState(State{0, 0, cap[2], nullptr});
 				printGoal(cur);
 				return true;
 			}
