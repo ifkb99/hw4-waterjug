@@ -108,7 +108,6 @@ void printGoal(State* goal) {
 }
 
 bool hitGoals(State *cur) {
-	visitedMatrix[0][0] = new State(-1, -1, -1, "", -1);
 	BFTraversal.push(cur);
 	while (!BFTraversal.empty()) {
 		cur = BFTraversal.front();
