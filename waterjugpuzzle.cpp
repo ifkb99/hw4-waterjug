@@ -7,7 +7,7 @@ using namespace std;
 
 State CtoA(State cur) {
 	vector<State> parent;
-	State nextState = State{cur.a, cur.b, cur.c, parent};
+	State nextState = State{cur.a, cur.b, cur.c, parent, "C to A"};
 	nextState.parent.push_back(cur);
 	if (cur.a < cap[0]) {
 		int pour = cap[0] - cur.a;
@@ -24,7 +24,7 @@ State CtoA(State cur) {
 
 State BtoA(State cur) {
 	vector<State> parent;
-	State nextState = State{cur.a, cur.b, cur.c, parent};
+	State nextState = State{cur.a, cur.b, cur.c, parent, "B to A"};
 	nextState.parent.push_back(cur);
 	if (cur.a < cap[0]) {
 		int pour = cap[0] - cur.a;
@@ -42,7 +42,7 @@ State BtoA(State cur) {
 State CtoB(State cur) {
 	vector<State> parent;
 
-	State nextState = State{cur.a, cur.b, cur.c, parent};
+	State nextState = State{cur.a, cur.b, cur.c, parent, "C to B"};
 	nextState.parent.push_back(cur);
 	if (cur.b < cap[1]) {
 		int pour = cap[1] - cur.b;
@@ -60,7 +60,7 @@ State CtoB(State cur) {
 State AtoB(State cur) {
 	vector<State> parent;
 
-	State nextState = State{cur.a, cur.b, cur.c, parent};
+	State nextState = State{cur.a, cur.b, cur.c, parent, "A to B"};
 	nextState.parent.push_back(cur);
 	if (cur.b < cap[1]) {
 		int pour = cap[1] - cur.b;
@@ -78,7 +78,7 @@ State AtoB(State cur) {
 State BtoC(State cur) {
 	vector<State> parent;
 
-	State nextState = State{cur.a, cur.b, cur.c, parent};
+	State nextState = State{cur.a, cur.b, cur.c, parent, "B to C"};
 	nextState.parent.push_back(cur);
 	if (cur.c < cap[2]) {
 		int pour = cap[2] - cur.c;
@@ -96,7 +96,7 @@ State BtoC(State cur) {
 State AtoC(State cur) {
 	vector<State> parent;
 
-	State nextState = State{cur.a, cur.b, cur.c, parent};
+	State nextState = State{cur.a, cur.b, cur.c, parent, "A to C"};
 	nextState.parent.push_back(cur);
 	if (cur.c < cap[2]) {
 		int pour = cap[2] - cur.c;
@@ -111,30 +111,25 @@ State AtoC(State cur) {
 	return nextState;
 }
 
-//void printState(State s) {
-//	// cout << "Pour " << s.amt << " gallon";
-//	// if (s.amt > 1) { cout << "s"; }
-//	// cout << " from " << s.op << ". " << s.to_string() << endl;
-//	cout << s.to_string() << endl;
-//}
+void printState(State s) {
+	cout << s.op << " " << s.to_string() << endl;
+}
 
 void printGoal(State goal) {
 	//TODO: add in extra string stuff
 	//reverse(goal.v.begin(), goal.v.end());
+	stack<State> stk;
 
 	while (goal.parent.size() != 0) {
-		cout << goal.to_string() << endl;
+		stk.push(goal);
 		goal = goal.parent[0];
 	}
 	goal = goal.parent[0];
-	cout << goal.to_string() << endl;
-
-
-
-//	for (auto &s: goal.v) {
-//		cout << s.to_string() << endl;
-//	}
-//	cout << goal.to_string() << endl;
+	cout << goal.op << " " << goal.to_string() << endl;
+	while (!stk.empty()) {
+		printState(stk.top());
+		stk.pop();
+	}
 }
 
 bool visitedState(State &cur) {
@@ -205,17 +200,12 @@ int main(int argc, const char * argv[]) {
 
 	vector<State> parent;
 
-	if (!hitGoals(State{0, 0, cap[2], parent})) {
+	if (!hitGoals(State{0, 0, cap[2], parent, ""})) {
 		cout << "No solution." << endl;
 	}
 
 	//delete visitedMatrix
 	for (int i=0; i<cap[0]+1; i++) {
-		//debug loop
-		// for (int j=1; j<cap[1]+1; j++) {
-		// 	if (visitedMatrix[i][j] != nullptr)
-		// 		cout << i << ", " << j << ": " << visitedMatrix[i][j]->to_string() << endl;
-		// }
 		delete [] visitedMatrix[i];
 	}
 	delete [] visitedMatrix;

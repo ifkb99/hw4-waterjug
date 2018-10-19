@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <stack>
 #include <vector>
 #include <queue>
 
@@ -10,11 +11,9 @@
 struct State {
 	int a, b, c;
 	std::vector<State> parent;
+	std::string op;
 
-	//used for printing
-	std::string operation;
-
-	State(int _a, int _b, int _c, std::vector<State> _parent) : a(_a), b(_b), c(_c), parent(_parent) {}
+	State(int _a, int _b, int _c, std::vector<State> _parent, std::string _op) : a(_a), b(_b), c(_c), parent(_parent), op(_op) {}
 
 	//returns string of jug state
 	std::string to_string() {
