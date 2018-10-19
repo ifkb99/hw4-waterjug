@@ -162,10 +162,10 @@ int main(int argc, const char * argv[]) {
 	}
 
 	//define and populate trial matrix
-	visitedMatrix = new State**[cap[0]+1];
+	visitedMatrix = new bool*[cap[0]+1];
 	for (int i=0; i<cap[0]+1; i++) {
-		visitedMatrix[i] = new State*[cap[1]+1];
-		fill(visitedMatrix[i], visitedMatrix[i]+cap[1]+1, nullptr);
+		visitedMatrix[i] = new bool[cap[1]+1];
+		fill(visitedMatrix[i], visitedMatrix[i]+cap[1]+1, false);
 	}
 
 	startState = new State{0, 0, cap[2], "", -1};
@@ -175,12 +175,6 @@ int main(int argc, const char * argv[]) {
 
 	//delete visitedMatrix
 	for (int i=0; i<cap[0]+1; i++) {
-		//debug loop
-		// for (int j=0; j<cap[1]+1; j++) {
-		// 	if (visitedMatrix[i][j] != nullptr)
-		// 		cout << i << ", " << j << ": " << visitedMatrix[i][j]->to_string() << endl;
-		// 		//delete visitedMatrix[i][j];
-		// }
 		delete [] visitedMatrix[i];
 	}
 	delete [] visitedMatrix;

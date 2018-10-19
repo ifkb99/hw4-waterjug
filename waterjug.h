@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <vector>
 #include <queue>
 
 //represents state of water in jugs
@@ -11,7 +12,7 @@ struct State {
 
 	//used for printing
 	std::string op;
-
+  
 	State(int _a, int _b, int _c, std::string _op, int _amt) : a(_a), b(_b), c(_c), op(_op), amt(_amt) {}
 
 	//returns string of jug state
@@ -43,7 +44,7 @@ void printGoal(State goal);
 bool hitGoals(State cur);
 
 //a capA by capB matrix
-State ***visitedMatrix;
+bool **visitedMatrix;
 
 State *startState;
 
