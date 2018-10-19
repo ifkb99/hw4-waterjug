@@ -101,29 +101,24 @@ State AtoC(State cur) {
 	return nextState;
 }
 
+void printState(State s) {
+	// cout << "Pour " << s.amt << " gallon";
+	// if (s.amt > 1) { cout << "s"; }
+	// cout << " from " << s.op << ". " << s.to_string() << endl;
+	cout << s.to_string() << endl;
+}
+
 void printGoal(State goal) {
 	//TODO: add in extra string stuff
-
-	while (goal.parent[0].a != 0 && goal.parent[1].b != 0) {
-		cout << goal.to_string() << endl;
-		goal = goal.parent[0];
-	}
-	cout << goal.to_string() << endl;
-
-
-//	if (goal.a != 0 && goal.b != 0) {
-//		printGoal(*goal.parent);
+	//reverse(goal.v.begin(), goal.v.end());
+//	for (auto &s: goal.v) {
+//		cout << s.to_string() << endl;
 //	}
 //	cout << goal.to_string() << endl;
-//	vector<State> solutionPath;
-//	State current = goal;
-//	while (goal.a != 0 && goal.b != 0) {
-//		solutionPath.push_back(goal);
-//		current = *current.parent;
-//	}
-//	for (int i = solutionPath.size() - 1; i >= 0; i--) {
-//		cout << solutionPath[i].to_string() << endl;
-//	}
+}
+
+bool visitedState(State &cur) {
+	return visitedMatrix[cur.a][cur.b] != false;
 }
 
 bool hitGoals(State cur) {
@@ -134,6 +129,7 @@ bool hitGoals(State cur) {
 		if (!visitedMatrix[cur.a][cur.b]) {
 			visitedMatrix[cur.a][cur.b] = true;
 			if (cur.a == goal[0] && cur.b == goal[1]) {
+				//printState(State{0, 0, cap[2]});
 				printGoal(cur);
 				return true;
 			}
@@ -187,13 +183,17 @@ int main(int argc, const char * argv[]) {
 		fill(visitedMatrix[i], visitedMatrix[i]+cap[1]+1, false);
 	}
 
-	vector<State> parent;
-	if (!hitGoals(State{0, 0, cap[2], parent})) {
+	if (!hitGoals(State{0, 0, cap[2]})) {
 		cout << "No solution." << endl;
 	}
 
 	//delete visitedMatrix
 	for (int i=0; i<cap[0]+1; i++) {
+		//debug loop
+		// for (int j=1; j<cap[1]+1; j++) {
+		// 	if (visitedMatrix[i][j] != nullptr)
+		// 		cout << i << ", " << j << ": " << visitedMatrix[i][j]->to_string() << endl;
+		// }
 		delete [] visitedMatrix[i];
 	}
 	delete [] visitedMatrix;
