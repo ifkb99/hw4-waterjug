@@ -13,7 +13,7 @@ struct State {
 	//used for printing
 	std::string operation;
 
-	State(int _a, int _b, int _c, State* _parent) : a(_a), b(_b), c(_c), parent(_parent) {}
+	State(int _a, int _b, int _c) : a(_a), b(_b), c(_c) {}
 
 	//returns string of jug state
 	std::string to_string() {
@@ -47,6 +47,6 @@ bool hitGoals(State cur);
 State ***visitedMatrix;
 
 //traversal queue
-std::queue<State> BFTraversal;
+std::queue<State*> BFTraversal;
 
 #endif
