@@ -7,13 +7,12 @@
 
 //represents state of water in jugs
 struct State {
-	int a, b, c;
-	State *parent;
+	int a, b, c, amt;
 
 	//used for printing
-	std::string operation;
+	std::string op;
 
-	State(int _a, int _b, int _c) : a(_a), b(_b), c(_c) {}
+	State(int _a, int _b, int _c, std::string _op, int _amt) : a(_a), b(_b), c(_c), op(_op), amt(_amt) {}
 
 	//returns string of jug state
 	std::string to_string() {
@@ -45,6 +44,8 @@ bool hitGoals(State cur);
 
 //a capA by capB matrix
 State ***visitedMatrix;
+
+State *startState;
 
 //traversal queue
 std::queue<State*> BFTraversal;

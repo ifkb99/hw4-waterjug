@@ -13,9 +13,9 @@ bool notVisited(State* cur) {
 	return visitedMatrix[cur->a][cur->b] == nullptr;
 }
 
-void stateCheck(State *cur, int a, int b) {
-	if (visitedMatrix[a][b] == nullptr) {
-		visitedMatrix[a][b] = cur;
+void stateCheck(State *cur, State *last) {
+	if (visitedMatrix[cur->a][cur->b] == nullptr) {
+		visitedMatrix[cur->a][cur->b] = last;
 	} else {
 		delete cur;
 		cur = nullptr;
@@ -26,10 +26,10 @@ State* CtoA(State *cur) {
 	State *nextState = nullptr;
 	int pour = min(cur->c, cap[0] - cur->a);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c);
+		nextState = new State(cur->a, cur->b, cur->c, "C to A", pour);
 		nextState->a += pour;
 		nextState->c -= pour;
-		stateCheck(nextState, cur->a, cur->b);
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
@@ -38,10 +38,10 @@ State* BtoA(State *cur) {
 	State *nextState = nullptr;
 	int pour = min(cur->b, cap[0] - cur->a);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c);
+		nextState = new State(cur->a, cur->b, cur->c, "B to A", pour);
 		nextState->a += pour;
 		nextState->b -= pour;
-		stateCheck(nextState, cur->a, cur->b);
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
@@ -50,10 +50,10 @@ State* CtoB(State *cur) {
 	State *nextState = nullptr;
 	int pour = min(cur->c, cap[1] - cur->b);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c);
+		nextState = new State(cur->a, cur->b, cur->c, "C to B", pour);
 		nextState->b += pour;
 		nextState->c -= pour;
-		stateCheck(nextState, cur->a, cur->b);
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
@@ -62,10 +62,10 @@ State* AtoB(State *cur) {
 	State *nextState = nullptr;
 	int pour = min(cur->a, cap[1] - cur->b);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c);
+		nextState = new State(cur->a, cur->b, cur->c, "A to B", pour);
 		nextState->b += pour;
 		nextState->a -= pour;
-		stateCheck(nextState, cur->a, cur->b);
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
@@ -74,10 +74,10 @@ State* BtoC(State *cur) {
 	State *nextState = nullptr;
 	int pour = min(cur->b, cap[2] - cur->c);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c);
+		nextState = new State(cur->a, cur->b, cur->c, "B to C", pour);
 		nextState->c += pour;
 		nextState->b -= pour;
-		stateCheck(nextState, cur->a, cur->b);
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
@@ -86,52 +86,45 @@ State* AtoC(State *cur) {
 	State *nextState = nullptr;
 	int pour = min(cur->a, cap[2] - cur->c);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c);
+		nextState = new State(cur->a, cur->b, cur->c, "A to C", pour);
 		nextState->c += pour;
 		nextState->a -= pour;
-		stateCheck(nextState, cur->a, cur->b);
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
 
 void printState(State* s) {
-	// cout << "Pour " << s.amt << " gallon";
-	// if (s.amt > 1) { cout << "s"; }
-	// cout << " from " << s.op << ". " << s.to_string() << endl;
-	cout << s->to_string() << endl;
+	cout << "Pour " << s->amt << " gallon";
+	if (s->amt > 1) { cout << "s"; }
+	cout << " from " << s->op << ". " << s->to_string() << endl;
 }
 
 void printGoal(State* goal) {
-	//TODO: add in extra string stuff
-	// cout << goal->a << ", " << goal->b << endl;
-	// if (goal->a != 0 && goal->b != 0) {
-	// 	printGoal(visitedMatrix[goal->a][goal->b]);
-	// }
-	// printState(goal);
-	while (goal->a != 0 && goal->b != 0) {
+	if (goal->a != 0 || goal->b != 0) {
+		printGoal(visitedMatrix[goal->a][goal->b]);
 		printState(goal);
-		goal = visitedMatrix[goal->a][goal->b];
-	}
-	printState(goal);
+	}	
 }
 
 bool hitGoals(State *cur) {
+	visitedMatrix[0][0] = new State(-1, -1, -1, "", -1);
 	BFTraversal.push(cur);
 	while (!BFTraversal.empty()) {
-		//cur = BFTraversal.front();
-		if (BFTraversal.front() != nullptr && notVisited(BFTraversal.front())) {
-			if (BFTraversal.front()->a == goal[0] && BFTraversal.front()->b == goal[1]) {
-				//printGoal(cur);
-				cout << BFTraversal.front()->to_string() << endl;
+		cur = BFTraversal.front();
+		if (cur != nullptr) {
+			if (cur->a == goal[0] && cur->b == goal[1]) {
+				cout << "Initial state. " << startState->to_string() << endl;
+				printGoal(cur);
 				return true;
 			}
 			//push all traversals into queue
-			BFTraversal.push(CtoA(BFTraversal.front()));
-			BFTraversal.push(BtoA(BFTraversal.front()));
-			BFTraversal.push(CtoB(BFTraversal.front()));
-			BFTraversal.push(AtoB(BFTraversal.front()));
-			BFTraversal.push(BtoC(BFTraversal.front()));
-			BFTraversal.push(AtoC(BFTraversal.front()));
+			BFTraversal.push(CtoA(cur));
+			BFTraversal.push(BtoA(cur));
+			BFTraversal.push(CtoB(cur));
+			BFTraversal.push(AtoB(cur));
+			BFTraversal.push(BtoC(cur));
+			BFTraversal.push(AtoC(cur));
 		}
 		BFTraversal.pop();
 	}
@@ -176,7 +169,7 @@ int main(int argc, const char * argv[]) {
 		fill(visitedMatrix[i], visitedMatrix[i]+cap[1]+1, nullptr);
 	}
 
-	State *startState = new State{0, 0, cap[2]};
+	startState = new State{0, 0, cap[2], "", -1};
 	if (!hitGoals(startState)) {
 		cout << "No solution." << endl;
 	}
@@ -184,10 +177,11 @@ int main(int argc, const char * argv[]) {
 	//delete visitedMatrix
 	for (int i=0; i<cap[0]+1; i++) {
 		//debug loop
-		for (int j=0; j<cap[1]+1; j++) {
-			if (visitedMatrix[i][j] != nullptr)
-				cout << i << ", " << j << ": " << visitedMatrix[i][j]->to_string() << endl;
-		}
+		// for (int j=0; j<cap[1]+1; j++) {
+		// 	if (visitedMatrix[i][j] != nullptr)
+		// 		cout << i << ", " << j << ": " << visitedMatrix[i][j]->to_string() << endl;
+		// 		//delete visitedMatrix[i][j];
+		// }
 		delete [] visitedMatrix[i];
 	}
 	delete [] visitedMatrix;
