@@ -3,18 +3,17 @@
 
 #include <iostream>
 #include <sstream>
-#include <vector>
 #include <queue>
 
 //represents state of water in jugs
 struct State {
 	int a, b, c;
-	std::vector<State> v;
+	std::vector<State> parent;
 
 	//used for printing
 	std::string operation;
 
-	State(int _a, int _b, int _c) : a(_a), b(_b), c(_c) {}
+	State(int _a, int _b, int _c, std::vector<State> _parent) : a(_a), b(_b), c(_c), parent(_parent) {}
 
 	//returns string of jug state
 	std::string to_string() {
@@ -31,6 +30,9 @@ int cap[3];
 //goal values for jug a b and c
 int goal[3];
 
+//functions
+bool hitGoals(State cur);
+void printGoal(State goal);
 //state mod funcs
 State CtoA(State cur);
 State BtoA(State cur);
@@ -38,11 +40,6 @@ State CtoB(State cur);
 State AtoB(State cur);
 State BtoC(State cur);
 State AtoC(State cur);
-
-//functions
-void printState(State s);
-void printGoal(State goal);
-bool hitGoals(State cur);
 
 //a capA by capB matrix
 bool **visitedMatrix;
