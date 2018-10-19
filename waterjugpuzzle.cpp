@@ -5,131 +5,115 @@
 
 using namespace std;
 
-State CtoA(State cur) {
-	State nextState = State{cur.a, cur.b, cur.c};
-	nextState.v.push_back(cur);
-	if (cur.a < cap[0]) {
-		int pour = cap[0] - cur.a;
-		if (pour >= cur.c) {
-			nextState.a += cur.c;
-			nextState.c = 0;
-		} else {
-			nextState.c -= pour;
-			nextState.a += pour;
-		}
+int min(int a, int b) {
+	return a > b ? b : a;
+}
+
+bool notVisited(State* cur) {
+	return visitedMatrix[cur->a][cur->b] == nullptr;
+}
+
+void stateCheck(State *cur, State *last) {
+	if (visitedMatrix[cur->a][cur->b] == nullptr) {
+		visitedMatrix[cur->a][cur->b] = last;
+	} else {
+		delete cur;
+		cur = nullptr;
+	}
+}
+
+State* CtoA(State *cur) {
+	State *nextState = nullptr;
+	int pour = min(cur->c, cap[0] - cur->a);
+	if (pour > 0) {
+		nextState = new State(cur->a, cur->b, cur->c, "C to A", pour);
+		nextState->a += pour;
+		nextState->c -= pour;
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
 
-State BtoA(State cur) {
-	State nextState = State{cur.a, cur.b, cur.c};
-	nextState.v.push_back(cur);
-	if (cur.a < cap[0]) {
-		int pour = cap[0] - cur.a;
-		if (pour >= cur.b) {
-			nextState.a += cur.b;
-			nextState.b = 0;
-		} else {
-			nextState.b -= pour;
-			nextState.a += pour;
-		}
+State* BtoA(State *cur) {
+	State *nextState = nullptr;
+	int pour = min(cur->b, cap[0] - cur->a);
+	if (pour > 0) {
+		nextState = new State(cur->a, cur->b, cur->c, "B to A", pour);
+		nextState->a += pour;
+		nextState->b -= pour;
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
 
-State CtoB(State cur) {
-	State nextState = State{cur.a, cur.b, cur.c};
-	nextState.v.push_back(cur);
-	if (cur.b < cap[1]) {
-		int pour = cap[1] - cur.b;
-		if (pour >= cur.c) {
-			nextState.b += cur.c;
-			nextState.c = 0;
-		} else {
-			nextState.c -= pour;
-			nextState.b += pour;
-		}
+State* CtoB(State *cur) {
+	State *nextState = nullptr;
+	int pour = min(cur->c, cap[1] - cur->b);
+	if (pour > 0) {
+		nextState = new State(cur->a, cur->b, cur->c, "C to B", pour);
+		nextState->b += pour;
+		nextState->c -= pour;
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
 
-State AtoB(State cur) {
-	State nextState = State{cur.a, cur.b, cur.c};
-	nextState.v.push_back(cur);
-	if (cur.b < cap[1]) {
-		int pour = cap[1] - cur.b;
-		if (pour >= cur.a) {
-			nextState.b += cur.a;
-			nextState.a = 0;
-		} else {
-			nextState.a -= pour;
-			nextState.b += pour;
-		}
+State* AtoB(State *cur) {
+	State *nextState = nullptr;
+	int pour = min(cur->a, cap[1] - cur->b);
+	if (pour > 0) {
+		nextState = new State(cur->a, cur->b, cur->c, "A to B", pour);
+		nextState->b += pour;
+		nextState->a -= pour;
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
 
-State BtoC(State cur) {
-	State nextState = State{cur.a, cur.b, cur.c};
-	nextState.v.push_back(cur);
-	if (cur.c < cap[2]) {
-		int pour = cap[2] - cur.c;
-		if (pour >= cur.b) {
-			nextState.c += cur.b;
-			nextState.b = 0;
-		} else {
-			nextState.b -= pour;
-			nextState.c += pour;
-		}
+State* BtoC(State *cur) {
+	State *nextState = nullptr;
+	int pour = min(cur->b, cap[2] - cur->c);
+	if (pour > 0) {
+		nextState = new State(cur->a, cur->b, cur->c, "B to C", pour);
+		nextState->c += pour;
+		nextState->b -= pour;
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
 
-State AtoC(State cur) {
-	State nextState = State{cur.a, cur.b, cur.c};
-	nextState.v.push_back(cur);
-	if (cur.c < cap[2]) {
-		int pour = cap[2] - cur.c;
-		if (pour >= cur.a) {
-			nextState.c += cur.a;
-			nextState.a = 0;
-		} else {
-			nextState.a -= pour;
-			nextState.c += pour;
-		}
+State* AtoC(State *cur) {
+	State *nextState = nullptr;
+	int pour = min(cur->a, cap[2] - cur->c);
+	if (pour > 0) {
+		nextState = new State(cur->a, cur->b, cur->c, "A to C", pour);
+		nextState->c += pour;
+		nextState->a -= pour;
+		stateCheck(nextState, cur);
 	}
 	return nextState;
 }
 
-void printState(State s) {
-	// cout << "Pour " << s.amt << " gallon";
-	// if (s.amt > 1) { cout << "s"; }
-	// cout << " from " << s.op << ". " << s.to_string() << endl;
-	cout << s.to_string() << endl;
+void printState(State* s) {
+	cout << "Pour " << s->amt << " gallon";
+	if (s->amt > 1) { cout << "s"; }
+	cout << " from " << s->op << ". " << s->to_string() << endl;
 }
 
-void printGoal(State goal) {
-	//TODO: add in extra string stuff
-	//reverse(goal.v.begin(), goal.v.end());
-	for (auto &s: goal.v) {
-		cout << s.to_string() << endl;
-	}
-	cout << goal.to_string() << endl;
+void printGoal(State* goal) {
+	if (goal->a != 0 || goal->b != 0) {
+		printGoal(visitedMatrix[goal->a][goal->b]);
+		printState(goal);
+	}	
 }
 
-bool visitedState(State &cur) {
-	return visitedMatrix[cur.a][cur.b] != false;
-}
-
-bool hitGoals(State cur) {
+bool hitGoals(State *cur) {
 	BFTraversal.push(cur);
 	while (!BFTraversal.empty()) {
 		cur = BFTraversal.front();
-		BFTraversal.pop();
-		if (!visitedMatrix[cur.a][cur.b]) {
-			visitedMatrix[cur.a][cur.b] = true;
-			if (cur.a == goal[0] && cur.b == goal[1]) {
-				//printState(State{0, 0, cap[2]});
+		if (cur != nullptr) {
+			if (cur->a == goal[0] && cur->b == goal[1]) {
+				cout << "Initial state. " << startState->to_string() << endl;
 				printGoal(cur);
 				return true;
 			}
@@ -141,6 +125,7 @@ bool hitGoals(State cur) {
 			BFTraversal.push(BtoC(cur));
 			BFTraversal.push(AtoC(cur));
 		}
+		BFTraversal.pop();
 	}
 	return false;
 }
@@ -183,17 +168,13 @@ int main(int argc, const char * argv[]) {
 		fill(visitedMatrix[i], visitedMatrix[i]+cap[1]+1, false);
 	}
 
-	if (!hitGoals(State{0, 0, cap[2]})) {
+	startState = new State{0, 0, cap[2], "", -1};
+	if (!hitGoals(startState)) {
 		cout << "No solution." << endl;
 	}
 
 	//delete visitedMatrix
 	for (int i=0; i<cap[0]+1; i++) {
-		//debug loop
-		// for (int j=1; j<cap[1]+1; j++) {
-		// 	if (visitedMatrix[i][j] != nullptr)
-		// 		cout << i << ", " << j << ": " << visitedMatrix[i][j]->to_string() << endl;
-		// }
 		delete [] visitedMatrix[i];
 	}
 	delete [] visitedMatrix;
