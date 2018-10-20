@@ -14,7 +14,7 @@ bool notVisited(State* cur) {
 }
 
 void stateCheck(State *cur, State *last) {
-	if (!(cur->a > cap[0] || cur->b > cap[1]) && visitedMatrix[cur->a][cur->b] == nullptr){// && cur->a != last->a && cur->b != last->b) {
+	if (!(cur->a > cap[0] || cur->b > cap[1] || cur->a < 0 || cur->b < 0) && visitedMatrix[cur->a][cur->b] == nullptr){// && cur->a != last->a && cur->b != last->b) {
 		//segfault on line above
 		//vector is assigned to insane value, probably bad pointer
 		//why?
@@ -198,13 +198,15 @@ int main(int argc, const char * argv[]) {
 	//delete visitedMatrix
 	for (int i=0; i<cap[0]+1; i++) {
 		for (int j=1; j<cap[1]+1; j++) {
-			if (visitedMatrix[i][j] != nullptr)
+			if (visitedMatrix[i][j] != nullptr) {
+				//cout << i << ", " << j << "; " << visitedMatrix[i][j]->to_string() << endl;
 				delete visitedMatrix[i][j];
+			}
 		}
 		delete [] visitedMatrix[i];
 	}
 	delete [] visitedMatrix;
-	delete startState;
+	//delete startState;
 
 	return 0;
 }
