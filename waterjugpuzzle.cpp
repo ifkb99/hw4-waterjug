@@ -14,7 +14,14 @@ bool notVisited(State* cur) {
 }
 
 void stateCheck(State *cur, State *last) {
-	if (visitedMatrix[cur->a][cur->b] == nullptr) {
+	if (!(cur->a > cap[0] || cur->b > cap[1]) && visitedMatrix[cur->a][cur->b] == nullptr){// && cur->a != last->a && cur->b != last->b) {
+		//segfault on line above
+		//vector is assigned to insane value, probably bad pointer
+		//why?
+		// if (cur->a > cap[0] || cur->b > cap[1]) {
+		// 	cout << "last: " << last->to_string() << endl;
+		// 	cout << "cur: " << cur->to_string() << endl;
+		// }
 		visitedMatrix[cur->a][cur->b] = last;
 	} else {
 		delete cur;
@@ -23,6 +30,7 @@ void stateCheck(State *cur, State *last) {
 }
 
 State* CtoA(State *cur) {
+	//cout << "CtoA" << endl;
 	State *nextState = nullptr;
 	int pour = min(cur->c, cap[0] - cur->a);
 	if (pour > 0) {
@@ -35,6 +43,7 @@ State* CtoA(State *cur) {
 }
 
 State* BtoA(State *cur) {
+	// cout << "BtoA" << endl;
 	State *nextState = nullptr;
 	int pour = min(cur->b, cap[0] - cur->a);
 	if (pour > 0) {
@@ -47,6 +56,7 @@ State* BtoA(State *cur) {
 }
 
 State* CtoB(State *cur) {
+	// cout << "CtoB" << endl;
 	State *nextState = nullptr;
 	int pour = min(cur->c, cap[1] - cur->b);
 	if (pour > 0) {
@@ -59,6 +69,7 @@ State* CtoB(State *cur) {
 }
 
 State* AtoB(State *cur) {
+	// cout << "AtoB" << endl;
 	State *nextState = nullptr;
 	int pour = min(cur->a, cap[1] - cur->b);
 	if (pour > 0) {
@@ -71,27 +82,27 @@ State* AtoB(State *cur) {
 }
 
 State* BtoC(State *cur) {
-	State *nextState = nullptr;
 	int pour = min(cur->b, cap[2] - cur->c);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c, "B to C", pour);
+		State* nextState = new State(cur->a, cur->b, cur->c, "B to C", pour);
 		nextState->c += pour;
 		nextState->b -= pour;
 		stateCheck(nextState, cur);
 	}
-	return nextState;
+	return nullptr;
 }
 
 State* AtoC(State *cur) {
-	State *nextState = nullptr;
+	// cout << "AtoC" << endl;
 	int pour = min(cur->a, cap[2] - cur->c);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c, "A to C", pour);
+		State* nextState = new State(cur->a, cur->b, cur->c, "A to C", pour);
 		nextState->c += pour;
 		nextState->a -= pour;
 		stateCheck(nextState, cur);
+		return nextState;
 	}
-	return nextState;
+	return nullptr;
 }
 
 void printState(State* s) {
@@ -108,10 +119,14 @@ void printGoal(State* goal) {
 }
 
 bool hitGoals(State *cur) {
+	//currently looping forever on nosol tests
 	BFTraversal.push(cur);
 	while (!BFTraversal.empty()) {
 		cur = BFTraversal.front();
-		if (cur != nullptr) {
+		if (cur != nullptr) {//} || cur->a > cap[0] || cur->b > cap[1])) {
+			// if (cur->a > cap[0] || cur->b > cap[1]) {
+			// cout << cur->to_string() << " from " << cur->op << " pour: " << cur->amt << endl;
+			// }
 			if (cur->a == goal[0] && cur->b == goal[1]) {
 				cout << "Initial state. " << startState->to_string() << endl;
 				printGoal(cur);
@@ -119,14 +134,21 @@ bool hitGoals(State *cur) {
 			}
 			//push all traversals into queue
 			BFTraversal.push(CtoA(cur));
+			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 			BFTraversal.push(BtoA(cur));
+			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 			BFTraversal.push(CtoB(cur));
+			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 			BFTraversal.push(AtoB(cur));
+			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 			BFTraversal.push(BtoC(cur));
+			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 			BFTraversal.push(AtoC(cur));
+			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 		}
 		BFTraversal.pop();
 	}
+	//delete cur;
 	return false;
 }
 
@@ -139,7 +161,7 @@ int main(int argc, const char * argv[]) {
 	istringstream iss;
 	for (int i=1; i<=3; i++) {
 		iss.str(argv[i]);
-		if (!(iss >> cap[i-1])) {
+		if (!(iss >> cap[i-1]) || cap[i-1] < 0) {
 			cout << "Error: Invalid capacity '" << argv[i] << "' for jug " << errArr[i-1] << "." << endl;
 			return -1;
 		}
@@ -175,9 +197,14 @@ int main(int argc, const char * argv[]) {
 
 	//delete visitedMatrix
 	for (int i=0; i<cap[0]+1; i++) {
+		for (int j=1; j<cap[1]+1; j++) {
+			if (visitedMatrix[i][j] != nullptr)
+				delete visitedMatrix[i][j];
+		}
 		delete [] visitedMatrix[i];
 	}
 	delete [] visitedMatrix;
+	delete startState;
 
 	return 0;
 }

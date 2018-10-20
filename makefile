@@ -1,6 +1,6 @@
 FILE = $(wildcard *.cpp)
 CXX = g++
-CXX_FLAGS = -w -std=c++11#-c -Wall -Werror -pedantic-errors
+CXX_FLAGS = -w -std=c++11 -g#-c -Wall -Werror -pedantic-errors
 TARGET = $(patsubst %.cpp,%,$(FILE))
 OBJS = $(wildcard *.o)
 DEPS = $(wildcard *.h)

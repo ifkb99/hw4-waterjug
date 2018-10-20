@@ -1,6 +1,7 @@
 #ifndef WATERJUG_H
 #define WATERJUG_H
 
+#include <cmath>
 #include <iostream>
 #include <sstream>
 #include <queue>
