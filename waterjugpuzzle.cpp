@@ -13,16 +13,22 @@ bool notVisited(State* cur) {
 	return visitedMatrix[cur->a][cur->b] == nullptr;
 }
 
+bool contains(vector<State*> vec, State* s) {
+	for (int i=0; i<vec.size(); i++) {
+		if (vec[i]->to_string() == s->to_string()) {
+			//cout << "meme" << endl;
+			return true;
+		}
+	}
+	return false;
+}
+
 void stateCheck(State *cur, State *last) {
-	if (!(cur->a > cap[0] || cur->b > cap[1] || cur->a < 0 || cur->b < 0) && visitedMatrix[cur->a][cur->b] == nullptr){// && cur->a != last->a && cur->b != last->b) {
-		//segfault on line above
-		//vector is assigned to insane value, probably bad pointer
-		//why?
-		// if (cur->a > cap[0] || cur->b > cap[1]) {
-		// 	cout << "last: " << last->to_string() << endl;
-		// 	cout << "cur: " << cur->to_string() << endl;
-		// }
+	if (!(cur->a > cap[0] || cur->b > cap[1] || cur->a < 0 || cur->b < 0) && visitedMatrix[cur->a][cur->b] == nullptr) {
 		visitedMatrix[cur->a][cur->b] = last;
+		if (!contains(ptrVec, last)) {
+			ptrVec.push_back(cur);
+		}
 	} else {
 		delete cur;
 		cur = nullptr;
@@ -30,64 +36,61 @@ void stateCheck(State *cur, State *last) {
 }
 
 State* CtoA(State *cur) {
-	//cout << "CtoA" << endl;
-	State *nextState = nullptr;
 	int pour = min(cur->c, cap[0] - cur->a);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c, "C to A", pour);
+		State *nextState = new State(cur->a, cur->b, cur->c, "C to A", pour);
 		nextState->a += pour;
 		nextState->c -= pour;
 		stateCheck(nextState, cur);
+		return nextState;
 	}
-	return nextState;
+	return nullptr;
 }
 
 State* BtoA(State *cur) {
-	// cout << "BtoA" << endl;
-	State *nextState = nullptr;
 	int pour = min(cur->b, cap[0] - cur->a);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c, "B to A", pour);
+		State *nextState = new State(cur->a, cur->b, cur->c, "B to A", pour);
 		nextState->a += pour;
 		nextState->b -= pour;
 		stateCheck(nextState, cur);
+		return nextState;
 	}
-	return nextState;
+	return nullptr;
 }
 
 State* CtoB(State *cur) {
-	// cout << "CtoB" << endl;
-	State *nextState = nullptr;
 	int pour = min(cur->c, cap[1] - cur->b);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c, "C to B", pour);
+		State *nextState = new State(cur->a, cur->b, cur->c, "C to B", pour);
 		nextState->b += pour;
 		nextState->c -= pour;
 		stateCheck(nextState, cur);
+		return nextState;
 	}
-	return nextState;
+	return nullptr;
 }
 
 State* AtoB(State *cur) {
-	// cout << "AtoB" << endl;
-	State *nextState = nullptr;
 	int pour = min(cur->a, cap[1] - cur->b);
 	if (pour > 0) {
-		nextState = new State(cur->a, cur->b, cur->c, "A to B", pour);
+		State *nextState = new State(cur->a, cur->b, cur->c, "A to B", pour);
 		nextState->b += pour;
 		nextState->a -= pour;
 		stateCheck(nextState, cur);
+		return nextState;
 	}
-	return nextState;
+	return nullptr;
 }
 
 State* BtoC(State *cur) {
 	int pour = min(cur->b, cap[2] - cur->c);
 	if (pour > 0) {
-		State* nextState = new State(cur->a, cur->b, cur->c, "B to C", pour);
+		State *nextState = new State(cur->a, cur->b, cur->c, "B to C", pour);
 		nextState->c += pour;
 		nextState->b -= pour;
 		stateCheck(nextState, cur);
+		return nextState;
 	}
 	return nullptr;
 }
@@ -96,7 +99,7 @@ State* AtoC(State *cur) {
 	// cout << "AtoC" << endl;
 	int pour = min(cur->a, cap[2] - cur->c);
 	if (pour > 0) {
-		State* nextState = new State(cur->a, cur->b, cur->c, "A to C", pour);
+		State *nextState = new State(cur->a, cur->b, cur->c, "A to C", pour);
 		nextState->c += pour;
 		nextState->a -= pour;
 		stateCheck(nextState, cur);
@@ -123,9 +126,9 @@ bool hitGoals(State *cur) {
 	BFTraversal.push(cur);
 	while (!BFTraversal.empty()) {
 		cur = BFTraversal.front();
-		if (cur != nullptr) {//} || cur->a > cap[0] || cur->b > cap[1])) {
-			// if (cur->a > cap[0] || cur->b > cap[1]) {
-			// cout << cur->to_string() << " from " << cur->op << " pour: " << cur->amt << endl;
+		if (cur != nullptr) {
+			// if (!contains(PtrVec, cur)) {
+			// 	PtrVec.push_back(cur);
 			// }
 			if (cur->a == goal[0] && cur->b == goal[1]) {
 				cout << "Initial state. " << startState->to_string() << endl;
@@ -134,17 +137,11 @@ bool hitGoals(State *cur) {
 			}
 			//push all traversals into queue
 			BFTraversal.push(CtoA(cur));
-			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 			BFTraversal.push(BtoA(cur));
-			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 			BFTraversal.push(CtoB(cur));
-			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 			BFTraversal.push(AtoB(cur));
-			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 			BFTraversal.push(BtoC(cur));
-			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 			BFTraversal.push(AtoC(cur));
-			//cout << cur->to_string() << " " << BFTraversal.back()->to_string() << endl;
 		}
 		BFTraversal.pop();
 	}
@@ -161,22 +158,26 @@ int main(int argc, const char * argv[]) {
 	istringstream iss;
 	for (int i=1; i<=3; i++) {
 		iss.str(argv[i]);
-		if (!(iss >> cap[i-1]) || cap[i-1] < 0) {
+		if (!(iss >> cap[i-1]) || cap[i-1] < 1) {
 			cout << "Error: Invalid capacity '" << argv[i] << "' for jug " << errArr[i-1] << "." << endl;
 			return -1;
 		}
 		//add 3 to i in order to set the goal value
 		iss.clear();
-		iss.str(argv[i+3]);
-		if (!(iss >> goal[i-1]) || goal[i-1] < 0) {
-			cout << "Error: Invalid goal '" << argv[i+3] << "' for jug " << errArr[i-1] << "." << endl;
-			return -1;
-		}
-		if (goal[i-1] > cap[i-1]) {
-			cout << "Error: Goal cannot exceed capacity of jug " << errArr[i-1] << "." << endl;
+	}
+	for (int i=4; i<=6; i++) {
+		iss.str(argv[i]);
+		if (!(iss >> goal[i-4]) || goal[i-4] < 0) {
+			cout << "Error: Invalid goal '" << argv[i] << "' for jug " << errArr[i-4] << "." << endl;
 			return -1;
 		}
 		iss.clear();
+	}
+	for (int i=0; i<3; i++) {
+		if (goal[i] > cap[i]) {
+			cout << "Error: Goal cannot exceed capacity of jug " << errArr[i] << "." << endl;
+			return -1;
+		}
 	}
 	if (goal[0]+goal[1]+goal[2] != cap[2]) {
 		cout << "Error: Total gallons in goal state must be equal to the capacity of jug C." << endl;
@@ -195,18 +196,22 @@ int main(int argc, const char * argv[]) {
 		cout << "No solution." << endl;
 	}
 
+	//delete state pointers
+	for (auto v : ptrVec) {
+		// cout << v->to_string() << endl;
+		delete v;
+	}
+	// while (!ptrStk.empty()) {
+	// 	delete ptrStk.top();
+	// 	ptrStk.pop();
+	// }
+
 	//delete visitedMatrix
 	for (int i=0; i<cap[0]+1; i++) {
-		for (int j=1; j<cap[1]+1; j++) {
-			if (visitedMatrix[i][j] != nullptr) {
-				//cout << i << ", " << j << "; " << visitedMatrix[i][j]->to_string() << endl;
-				delete visitedMatrix[i][j];
-			}
-		}
 		delete [] visitedMatrix[i];
 	}
 	delete [] visitedMatrix;
-	//delete startState;
+	delete startState;
 
 	return 0;
 }

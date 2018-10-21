@@ -50,5 +50,6 @@ State *startState;
 
 //traversal queue
 std::queue<State*> BFTraversal;
+std::vector<State*> ptrVec;
 
 #endif
