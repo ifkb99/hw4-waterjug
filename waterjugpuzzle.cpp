@@ -13,10 +13,9 @@ bool notVisited(State* cur) {
 	return visitedMatrix[cur->a][cur->b] == nullptr;
 }
 
-bool contains(vector<State*> vec, State* s) {
-	for (int i=0; i<vec.size(); i++) {
-		if (vec[i]->to_string() == s->to_string()) {
-			//cout << "meme" << endl;
+bool contains(State* s) {
+	for (int i=0; i<ptrVec.size(); i++) {
+		if (ptrVec[i]->to_string() == s->to_string()) {
 			return true;
 		}
 	}
@@ -26,7 +25,7 @@ bool contains(vector<State*> vec, State* s) {
 void stateCheck(State *cur, State *last) {
 	if (!(cur->a > cap[0] || cur->b > cap[1] || cur->a < 0 || cur->b < 0) && visitedMatrix[cur->a][cur->b] == nullptr) {
 		visitedMatrix[cur->a][cur->b] = last;
-		if (!contains(ptrVec, last)) {
+		if (!contains(cur)) {
 			ptrVec.push_back(cur);
 		}
 	} else {
@@ -96,7 +95,6 @@ State* BtoC(State *cur) {
 }
 
 State* AtoC(State *cur) {
-	// cout << "AtoC" << endl;
 	int pour = min(cur->a, cap[2] - cur->c);
 	if (pour > 0) {
 		State *nextState = new State(cur->a, cur->b, cur->c, "A to C", pour);
@@ -122,14 +120,10 @@ void printGoal(State* goal) {
 }
 
 bool hitGoals(State *cur) {
-	//currently looping forever on nosol tests
 	BFTraversal.push(cur);
 	while (!BFTraversal.empty()) {
 		cur = BFTraversal.front();
 		if (cur != nullptr) {
-			// if (!contains(PtrVec, cur)) {
-			// 	PtrVec.push_back(cur);
-			// }
 			if (cur->a == goal[0] && cur->b == goal[1]) {
 				cout << "Initial state. " << startState->to_string() << endl;
 				printGoal(cur);
@@ -145,7 +139,6 @@ bool hitGoals(State *cur) {
 		}
 		BFTraversal.pop();
 	}
-	//delete cur;
 	return false;
 }
 
@@ -198,15 +191,9 @@ int main(int argc, const char * argv[]) {
 
 	//delete state pointers
 	for (auto v : ptrVec) {
-		// cout << v->to_string() << endl;
 		delete v;
 	}
-	// while (!ptrStk.empty()) {
-	// 	delete ptrStk.top();
-	// 	ptrStk.pop();
-	// }
 
-	//delete visitedMatrix
 	for (int i=0; i<cap[0]+1; i++) {
 		delete [] visitedMatrix[i];
 	}
